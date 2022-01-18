@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- <mapper namespace="mappings.springboard-mapping"> -->
+<mapper namespace="MainDAO">
+
+	<insert id="insertBoard">
+	<![CDATA[
+		insert into springboard(seq, title, writer, content) 
+		values((select nvl(max(seq), 0)+1 from springboard),#{title},#{writer},#{content})
+	]]>
+	</insert>
+	
+	<insert id="insertQuestionBoard">
+	<![CDATA[
+		insert into INQUIRES(
+			INQUIRE_NUM,
+			MEMBER_NUM, 
+			STOCK_NUM, 
+			INQUIRE_TITLE,
+			INQUIRE_CONTENT,
+			INQUIRE_DATE,
+			REPLY_STATUS,
+			REPLY_CONTENT
+			) 
+			values(
+			(SELECT NVL(MAX(INQUIRE_NUM),0)+1 FROM INQUIRES),
+			#{memberNum},
+			#{stockNum},
+			#{inquireTitle},
+			#{inquireContent},
+			SYSDATE,
+			'N', -- default로 이것이 삽입되는 지 모르므로 일단 강제 지정.
+			NULL
+			)
+	]]>
+	</insert>
+		
+	<select id="getBoardList_T" resultType="com.springcompany.biz.main.dao.MainVO">
+	<![CDATA[	
+		select * from springboard where title like '%'||#{searchKeyword}||'%' order by seq desc
+	]]>
+	</select>
+	
+	<select id="getBoardList_C" resultType="com.springcompany.biz.main.dao.MainVO">
+	<![CDATA[
+		select * from springboard where content like '%'||#{searchKeyword}||'%' order by seq desc
+	]]>
+	</select>
+	<select id="getCategoriesList" resultType="com.springcompany.biz.stock.dao.StockVO">
+	<![CDATA[
+		select
+			SCATEGORIES_NUM as scategoriesNum,
+			SCATEGORIES_NAME as scategoriesName
+			from SCATEGORIES T1
+				 JOIN LCATEGORIES T2 ON (T1.LCATEGORIES_NUM = T2.LCATEGORIES_NUM)
+			where LCATEGORIES_NAME = #{name}
+	]]>
+	</select>
+	
+	<select id="getStockList" resultType="com.springcompany.biz.main.dao.MainVO">
+	<![CDATA[
+		select
+			STOCK_NUM as stockNum,
+			STOCK_NAME as stockName
+			from STOCKS
+			order by STOCK_NUM
+	]]>
+	</select>
+	<select id="getMyReviewList" resultType="com.springcompany.biz.stock.dao.StockVO">
+	<![CDATA[
+		select 
+			STOCK_NAME as stockName,
+			REVIEW_GRADE as reviewGrade,
+			REVIEW_CONTENT as reviewContent,
+			REVIEW_DATE as reviewDate
+			
+			from (select ST.STOCK_NAME, ST.STOCK_NUM AS SNUM, RE.*
+				  from STOCKS ST, REVIEWS RE
+				  where ST.STOCK_NUM = RE.STOCK_NUM)
+			where MEMBER_NUM = #{num}
+	]]>
+	</select>
+	
+	<select id="getMemberAccumulated" resultType="com.springcompany.biz.main.dao.MainVO">
+	<![CDATA[
+		select 
+			ACCUMULATED_HISTORY as accumulatedHistory,
+			ACCUMULATED_MONEY as accumulatedMoney,
+			ACCUMULATED_USE as accumulatedUse,
+			ACCUMULATED_DATE as accumulatedDate
+			from ACCUMULATED 
+			where MEMBER_NUM = #{num}
+	]]>
+	</select>
+	
+	<select id="getMemberInfo" resultType="com.springcompany.biz.main.dao.MainVO">
+	<![CDATA[
+		SELECT
+			MEMBER_NUM as memberNum,
+			MEMBER_ID as memberId,
+			MEMBER_PASS as memberPass,
+			MEMBER_NAME as memberName,
+			MEMBER_EMAIL as memberEmail,
+			MEMBER_TEL as memberTel,
+			MEMBER_BIRTH as memberBirth
+			FROM MEMBERS
+			WHERE MEMBER_ID = #{id}
+	]]>
+	</select>
+	
+	<select id="getMyQnaList" resultType="com.springcompany.biz.main.dao.MainVO">
+	<![CDATA[
+		SELECT
+			INQUIRE_NUM as inquireNum,
+			INQUIRE_TITLE as inquireTitle,
+			INQUIRE_DATE as inquireDate,
+			REPLY_STATUS as replyStatus
+			FROM INQUIRES
+			WHERE MEMBER_NUM = #{num}
+			ORDER BY INQUIRE_NUM
+	]]>
+	</select>
+	
+	<select id="getMyQna" resultType="com.springcompany.biz.main.dao.MainVO">
+	<![CDATA[
+		SELECT 
+			INQUIRE_NUM as inquireNum,
+			INQUIRE_TITLE as inquireTitle, -- 제목
+			INQUIRE_CONTENT as inquireContent, -- 내용
+			REPLY_STATUS as replyStatus, -- 답변여부
+			REPLY_CONTENT as replyContent, -- 답변내용
+			INQUIRE_DATE as inquireDate, -- 작성일자
+			REPLY_DATE as replyDate -- 답변 작성일자
+		
+			FROM INQUIRES
+			WHERE INQUIRE_NUM = #{inquireNum}
+	]]>
+	</select>
+	
+	<select id="getNoitce" resultType="com.springcompany.biz.main.dao.MainVO">
+	<![CDATA[
+		SELECT
+			NOTICE_NUM as noticeNum,
+			NOTICE_TITLE as noticeTitle, -- 공지사항 제목
+			NOTICE_CONTENT as noticeContent,
+			NOTICE_DATE as noticeDate -- 작성일
+			FROM NOTICE
+			WHERE NOTICE_NUM = #{noticeNum}
+	]]>
+	</select>
+	
+	<select id="getQnaNotice" resultType="com.springcompany.biz.main.dao.MainVO">
+	<![CDATA[
+		SELECT
+			NOTICE_NUM as noticeNum,
+			NOTICE_TITLE as noticeTitle,
+			NOTICE_CONTENT as noticeContent,
+			NOTICE_DATE as noticeDate
+			FROM NOTICE
+			ORDER BY NOTICE_NUM
+	]]>
+	</select>
+	
+	<update id="updateMemberInfo">
+	<![CDATA[
+		update MEMBERS 
+			set MEMBER_PASS=#{memberPass}, 
+				MEMBER_TEL=#{memberTel}, 
+				MEMBER_EMAIL=#{memberEmail},
+				MEMBER_BIRTH=#{memberBirth}
+			where MEMBER_ID=#{memberId}
+	]]>
+	</update>
+	
+	<delete id="deleteBoard">
+	<![CDATA[
+		delete from springboard where seq=#{seq}
+	]]>
+	</delete>
+	
+</mapper>

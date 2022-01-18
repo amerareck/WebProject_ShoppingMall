@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<!-- Alias 설정(별칭 설정) -->
+	<typeAliases>
+		<typeAlias alias="mainVO" type="com.oreot.admin.main.dao.MainVO"/>
+		<typeAlias alias="memberVO" type="com.oreot.admin.member.dao.MemberVO"/>
+		<typeAlias alias="noticeVO" type="com.oreot.admin.notice.dao.NoticeVO"/>
+		<typeAlias alias="paymentVO" type="com.oreot.admin.payment.dao.PaymentVO"/>
+		<typeAlias alias="qnaVO" type="com.oreot.admin.qna.dao.QnaVO"/>
+		<typeAlias alias="stockVO" type="com.oreot.admin.stock.dao.StockVO"/>
+	</typeAliases>
+
+	<!-- Sql Mapper 설정 -->
+  	<mappers>
+  		<mapper resource="mappings/main-mapping.xml"/>
+  		<mapper resource="mappings/member-mapping.xml"/>
+  		<mapper resource="mappings/notice-mapping.xml"/>
+  		<mapper resource="mappings/payment-mapping.xml"/>
+  		<mapper resource="mappings/qna-mapping.xml"/>
+  		<mapper resource="mappings/stock-mapping.xml"/>
+  	</mappers>
+</configuration>
+
+
+
+
+
+

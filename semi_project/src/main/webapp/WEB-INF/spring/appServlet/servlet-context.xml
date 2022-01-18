@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+	</beans:bean>
+	
+	<context:component-scan base-package="com.springcompany.prz" />
+	
+	<!-- 파일 업로드 설정 -->
+	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"> <!-- id 이름을 설정하지 않으면 식별자 디폴트는 commonsMultipartResolver(소문자로 시작) 참조변수의 이름도 이렇게 사용하는 것이 일반적. 여기서 id="multipartResolver" 이것으로 고정-->
+		<beans:property name="maxUploadSize" value="100000" />
+	</beans:bean>
+	
+	<!-- 예외처리 방법2 : xml 기반의 예외처리. 좀 더 쉬운, 일반적인 예외처리 방법 -->
+	<beans:bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<beans:property name="exceptionMappings">
+			<beans:props>
+				<beans:prop key="java.lang.IllegalArgumentException" >
+					common/arithmeticError
+				</beans:prop>
+				<beans:prop key="java.lang.NullPointerException" >
+					common/nullPointerError
+				</beans:prop>
+			</beans:props>
+		</beans:property>
+	</beans:bean>
+	
+	<!-- Ajax 주석문 허가 -->
+	<mvc:annotation-driven/>
+	<!-- 스프링에서 처리할 수 없는 요청은 tomcat에 위임 -->
+	<mvc:default-servlet-handler/>
+	<!-- Jackson2 설정 / HttpMessageConverter 설정 -->
+   <beans:bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+      <beans:property name="messageConverters">
+         <beans:list>
+            <beans:bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+               <beans:property name="supportedMediaTypes">
+                  <beans:list>
+                     <beans:value>text/html;charset=UTF-8</beans:value>
+                     <beans:value>application/json;charset=UTF-8</beans:value>
+                  </beans:list>
+               </beans:property>
+            </beans:bean>
+         </beans:list>
+      </beans:property>
+   </beans:bean>
+	
+	
+	
+</beans:beans>
+
+
+
+
+
+
+
+
+
+
