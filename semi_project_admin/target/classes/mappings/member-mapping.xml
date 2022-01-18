@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Member">
+	<select id="getMemberList_I" resultType="memberVO">
+	<![CDATA[
+		SELECT 
+			MEMBER_NUM		AS memberNum,
+			MEMBER_ID		AS memberId,
+			MEMBER_NAME		AS memberName,
+			MEMBER_TEL		AS memberTel,
+			MEMBER_EMAIL	AS memberEmail,
+			MEMBER_ADDRESS	AS memberAddress,
+			MEMBER_DATE		AS memberDate,
+			MEMBER_AGREE	AS memberAgree
+		FROM MEMBERS 
+		WHERE MEMBER_ID LIKE '%'||#{searchKeyword}||'%' 
+			AND MEMBER_NUM != 0
+		ORDER BY MEMBER_NUM DESC
+	]]>
+	</select>
+		
+	<select id="getMemberList_N" resultType="memberVO">
+	<![CDATA[	
+		SELECT 
+			MEMBER_NUM		AS memberNum,
+			MEMBER_ID		AS memberId,
+			MEMBER_NAME		AS memberName,
+			MEMBER_TEL		AS memberTel,
+			MEMBER_EMAIL	AS memberEmail,
+			MEMBER_ADDRESS	AS memberAddress,
+			MEMBER_DATE		AS memberDate,
+			MEMBER_AGREE	AS memberAgree
+		FROM MEMBERS 
+		WHERE MEMBER_NAME LIKE '%'||#{searchKeyword}||'%' 
+			AND MEMBER_NUM != 0
+		ORDER BY MEMBER_NUM DESC
+	]]>
+	</select>
+	
+	<select id="getMemberInfo" resultType="memberVO">
+	<![CDATA[
+		SELECT 
+			MEMBER_NUM		AS memberNum,
+			MEMBER_ID		AS memberId,
+			MEMBER_NAME		AS memberName,
+			MEMBER_TEL		AS memberTel,
+			MEMBER_EMAIL	AS memberEmail,
+			MEMBER_ADDRESS	AS memberAddress,
+			MEMBER_DATE		AS memberDate,
+			MEMBER_AGREE	AS memberAgree
+		FROM MEMBERS 
+		WHERE MEMBER_NUM = #{memberNum}
+	]]>
+	</select>
+	
+	<update id="updateMember">
+	<![CDATA[
+		UPDATE MEMBERS SET MEMBER_ADDRESS=#{memberAddress}, MEMBER_TEL=#{memberTel}, MEMBER_EMAIL=#{memberEmail} where MEMBER_NUM=#{memberNum}
+	]]>
+	</update>
+	
+	<delete id="deleteMember">
+	<![CDATA[
+		DELETE FROM MEMBERS WHERE MEMBER_NUM=#{memberNum}
+	]]>
+	</delete>
+</mapper>

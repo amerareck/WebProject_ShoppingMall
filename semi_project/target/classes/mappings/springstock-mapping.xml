@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- <mapper namespace="mappings.springboard-mapping"> -->
+<mapper namespace="StockDAO">
+
+	<insert id="insertBoard">
+	<![CDATA[
+		insert into springboard(seq, title, writer, content) 
+		values((select nvl(max(seq), 0)+1 from springboard),#{title},#{writer},#{content})
+	]]>
+	</insert>
+	
+	<insert id="insertBasketInfo">
+	<![CDATA[
+		INSERT INTO BASKETS (BASKET_NUM,MEMBER_NUM,OPTION_NUM,BASKET_AMOUNT)
+   		VALUES((SELECT NVL(MAX(BASKET_NUM),0)+1 FROM BASKETS),#{memberNum},#{optionNum},#{basketAmount})
+	]]>
+	</insert>
+	
+	<insert id="getInterests">
+	<![CDATA[
+		INSERT INTO INTERESTS (INTEREST_NUM,MEMBER_NUM,OPTION_NUM)
+    	VALUES((SELECT NVL(MAX(INTEREST_NUM),0)+1 FROM INTERESTS),#{memberNum},#{optionNum});
+	]]>
+	</insert>
+	
+	<delete id="deleteInterests">
+	<![CDATA[
+		DELETE FROM INTERESTS
+			WHERE MEMBER_NUM=#{memberNum} AND OPTION_NUM=#{optionNum}
+	]]>
+	</delete>
+	<select id="getMemberNum" resultType="_int">
+	<![CDATA[
+		select MEMBER_NUM from MEMBERS where MEMBER_ID=#{id}
+	]]>
+	</select>
+	
+	<select id="getInterestInfo" resultType="com.springcompany.biz.stock.dao.StockVO">
+	<![CDATA[
+		SELECT
+			T1.STOCK_PHOTO as stockPhoto, -- 상품사진
+			T1.STOCK_NAME as stockName, -- 상품명
+            T1.OPTION_NUM as optionNum,
+			T1.OPTION_COLOR as optionColor, -- 옵션색상
+			T1.OPTION_SIZE as optionSize, -- 옵션사이즈
+			T1.OPTION_AMOUNT as optionAmount, -- 옵션재고
+    		(SELECT ACCUMULATED_PERCENT FROM ACCUMULATED_INFO)*T1.STOCK_PRICE AS accumulatedMoney, -- 적립금
+   			T1.STOCK_PRICE as stockPrice-- 상품가격
+			FROM (SELECT OP.*, S.STOCK_NUM AS ST_NUM, S.STOCK_NAME, S.STOCK_PHOTO, S.STOCK_PRICE
+					FROM OPTIONS OP, STOCKS S
+					WHERE OP.STOCK_NUM = S.STOCK_NUM) T1
+    		LEFT OUTER JOIN INTERESTS T2 ON T1.OPTION_NUM = T2.OPTION_NUM
+			WHERE T2.MEMBER_NUM = #{num}
+	]]>
+	</select>
+	
+	<select id="getBasketInfo" resultType="com.springcompany.biz.stock.dao.StockVO">
+	<![CDATA[
+		SELECT 
+			T2.STOCK_PHOTO as stockPhoto, -- 상품사진
+			T2.STOCK_NAME as stockName, -- 상품명
+			T2.OPTION_COLOR as optionColor, -- 상품색상
+			T2.OPTION_SIZE as optionSize, -- 상품사이즈
+			T1.BASKET_AMOUNT as basketAmount, -- 선택수량
+			T2.OPTION_AMOUNT as optionAmount, -- 옵션재고수량
+			(SELECT ACCUMULATED_PERCENT FROM ACCUMULATED_INFO)*T2.STOCK_PRICE AS accumulatedMoney, -- 적립예정금액
+			T2.STOCK_PRICE as stockPrice -- 상품가격
+			FROM BASKETS T1
+				JOIN (SELECT OP.*, ST.STOCK_PHOTO, ST.STOCK_NAME, ST.STOCK_PRICE, ST.STOCK_NUM AS ST_NUM
+			   	FROM OPTIONS OP, STOCKS ST WHERE OP.STOCK_NUM = ST.STOCK_NUM) T2
+		 		ON T1.OPTION_NUM = T2.OPTION_NUM
+			WHERE T1.MEMBER_NUM = #{num}
+	
+	]]>
+	</select>
+	
+	<!-- 대카테고리별 상품 리스트 -->
+	<select id="getstockL" resultType="com.springcompany.biz.stock.dao.StockVO">
+	<![CDATA[
+
+		SELECT
+    	T1.STOCK_NUM as stockNum,       
+    	T1.STOCK_PHOTO as stockPhoto,
+    	T1.STOCK_NAME as stockName,
+	    T1.STOCK_PRICE as stockPrice,
+	    COUNT(DISTINCT T4.REVIEW_NUM) as reviewNum    
+	    FROM STOCKS T1 
+		    LEFT OUTER JOIN SCATEGORIES T3 ON T1.SCATEGORIES_NUM = T3.SCATEGORIES_NUM
+		    LEFT OUTER JOIN REVIEWS T4 ON T1.STOCK_NUM = T4.STOCK_NUM  
+	    WHERE T3.LCATEGORIES_NUM = #{lcategoriesNum}
+	    GROUP BY T1.STOCK_NAME, T1.STOCK_PHOTO,  T1.STOCK_PRICE, T1.STOCK_NUM
+	    ORDER BY stockNum
+		
+	]]>
+	</select> <!-- 컬럼: T2.OPTION_COLOR,     GROUP BY : T2.OPTION_COLOR,  LEFT OUTER JOIN OPTIONS T2 ON T1.STOCK_NUM = T2.STOCK_NUM -->
+	
+	<!-- 소카테고리별 상품 리스트 -->
+	 <select id="getstockS" resultType="com.springcompany.biz.stock.dao.StockVO"> 
+	 <![CDATA[
+		SELECT
+		    T1.STOCK_NUM as stockNum,       
+		    T1.STOCK_PHOTO as stockPhoto,
+		    T1.STOCK_NAME as stockName, 
+		    T1.STOCK_PRICE as stockPrice,
+		    COUNT(DISTINCT T4.REVIEW_NUM) as reviewNum
+		FROM STOCKS T1
+		    left outer join reviews t4 on t1.stock_num = t4.stock_num,
+		    (select sc.*, st.stock_num from scategories sc, stocks st where sc.scategories_num = st.scategories_num) t3
+	    where t1.scategories_num = #{scategoriesNum}
+	    GROUP BY T1.STOCK_NAME, T1.STOCK_PHOTO,  T1.STOCK_PRICE, T1.STOCK_NUM
+	    ORDER BY stockNum
+	]]>
+	</select> 
+	
+	<!-- 상품 상세정보 	-->
+	<select id="getproduct" resultType="com.springcompany.biz.stock.dao.StockVO">
+	<![CDATA[
+		SELECT
+			s.stock_num as stockNum,
+			S.STOCK_PHOTO as stockPhoto,  
+			S.STOCK_NAME as stockName,   
+			S.STOCK_PRICE as stockPrice,  
+			(SELECT ACCUMULATED_PERCENT FROM ACCUMULATED_INFO)*S.STOCK_PRICE*0.01 AS accmulatedMoney, 		             
+			S.STOCK_INFO as stockInfo,    
+			P.PHOTO_LOCATION as photoLocation
+		FROM STOCKS S
+			 LEFT OUTER JOIN PHOTOS P ON S.STOCK_NUM = P.STOCK_NUM
+		WHERE S.STOCK_NUM = #{stockNum}
+		ORDER BY STOCK_NAME		
+	]]>
+	</select>	
+
+	
+</mapper>

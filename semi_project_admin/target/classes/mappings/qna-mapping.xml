@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Qna">
+	<select id="getQnaList_T" resultType="qnaVO">
+	<![CDATA[
+		SELECT 
+			T1.INQUIRE_NUM			AS inquireNum,
+			T1.STOCK_NUM			AS stockNum,
+			T2.STOCK_NAME			AS stockName,
+			T1.MEMBER_NUM			AS memberNum,
+			T3.MEMBER_ID			AS memberId,
+			T1.INQUIRE_TITLE		AS inquireTitle,
+			T1.INQUIRE_CONTENT		AS inquireContent,
+			T1.INQUIRE_DATE			AS inquireDate,
+			T1.INQUIRE_MODIFY_DATE	AS inquireModifyDate,
+			T1.REPLY_STATUS			AS replyStatus,
+			T1.REPLY_CONTENT		AS replyContent,
+			T1.REPLY_DATE			AS replyDate,
+			T1.REPLY_MODIFY_DATE	AS replyModifyDate
+		FROM INQUIRES T1 
+			LEFT JOIN STOCKS T2		ON T1.STOCK_NUM = T2.STOCK_NUM
+			LEFT JOIN MEMBERS T3	ON T1.MEMBER_NUM = T3.MEMBER_NUM 
+		WHERE T1.INQUIRE_TITLE LIKE '%'||#{searchKeyword}||'%' 
+		ORDER BY T1.INQUIRE_NUM DESC
+	]]>
+	</select>
+	
+	<select id="getQnaList_SN" resultType="qnaVO">
+	<![CDATA[
+		SELECT 
+			T1.INQUIRE_NUM			AS inquireNum,
+			T1.STOCK_NUM			AS stockNum,
+			T2.STOCK_NAME			AS stockName,
+			T1.MEMBER_NUM			AS memberNum,
+			T3.MEMBER_ID			AS memberId,
+			T1.INQUIRE_TITLE		AS inquireTitle,
+			T1.INQUIRE_CONTENT		AS inquireContent,
+			T1.INQUIRE_DATE			AS inquireDate,
+			T1.INQUIRE_MODIFY_DATE	AS inquireModifyDate,
+			T1.REPLY_STATUS			AS replyStatus,
+			T1.REPLY_CONTENT		AS replyContent,
+			T1.REPLY_DATE			AS replyDate,
+			T1.REPLY_MODIFY_DATE	AS replyModifyDate
+		FROM INQUIRES T1 
+			LEFT JOIN STOCKS T2		ON T1.STOCK_NUM = T2.STOCK_NUM
+			LEFT JOIN MEMBERS T3	ON T1.MEMBER_NUM = T3.MEMBER_NUM 
+		WHERE T2.STOCK_NAME LIKE '%'||#{searchKeyword}||'%' 
+		ORDER BY T1.INQUIRE_NUM DESC
+	]]>
+	</select>
+	
+	<select id="getQnaList_MI" resultType="qnaVO">
+	<![CDATA[
+		SELECT 
+			T1.INQUIRE_NUM			AS inquireNum,
+			T1.STOCK_NUM			AS stockNum,
+			T2.STOCK_NAME			AS stockName,
+			T1.MEMBER_NUM			AS memberNum,
+			T3.MEMBER_ID			AS memberId,
+			T1.INQUIRE_TITLE		AS inquireTitle,
+			T1.INQUIRE_CONTENT		AS inquireContent,
+			T1.INQUIRE_DATE			AS inquireDate,
+			T1.INQUIRE_MODIFY_DATE	AS inquireModifyDate,
+			T1.REPLY_STATUS			AS replyStatus,
+			T1.REPLY_CONTENT		AS replyContent,
+			T1.REPLY_DATE			AS replyDate,
+			T1.REPLY_MODIFY_DATE	AS replyModifyDate
+		FROM INQUIRES T1 
+			LEFT JOIN STOCKS T2		ON T1.STOCK_NUM = T2.STOCK_NUM
+			LEFT JOIN MEMBERS T3	ON T1.MEMBER_NUM = T3.MEMBER_NUM 
+		WHERE T3.MEMBER_ID LIKE '%'||#{searchKeyword}||'%' 
+		ORDER BY T1.INQUIRE_NUM DESC
+	]]>
+	</select>
+	
+	<select id="getQnaList_RS" resultType="qnaVO">
+	<![CDATA[
+		SELECT 
+			T1.INQUIRE_NUM			AS inquireNum,
+			T1.STOCK_NUM			AS stockNum,
+			T2.STOCK_NAME			AS stockName,
+			T1.MEMBER_NUM			AS memberNum,
+			T3.MEMBER_ID			AS memberId,
+			T1.INQUIRE_TITLE		AS inquireTitle,
+			T1.INQUIRE_CONTENT		AS inquireContent,
+			T1.INQUIRE_DATE			AS inquireDate,
+			T1.INQUIRE_MODIFY_DATE	AS inquireModifyDate,
+			T1.REPLY_STATUS			AS replyStatus,
+			T1.REPLY_CONTENT		AS replyContent,
+			T1.REPLY_DATE			AS replyDate,
+			T1.REPLY_MODIFY_DATE	AS replyModifyDate
+		FROM INQUIRES T1 
+			LEFT JOIN STOCKS T2		ON T1.STOCK_NUM = T2.STOCK_NUM
+			LEFT JOIN MEMBERS T3	ON T1.MEMBER_NUM = T3.MEMBER_NUM 
+		WHERE T1.REPLY_STATUS LIKE '%'||#{searchKeyword}||'%' 
+		ORDER BY T1.INQUIRE_NUM DESC
+	]]>
+	</select>
+	
+	<select id="getQnaInfo" resultType="qnaVO">
+	<![CDATA[
+		SELECT 
+			T1.INQUIRE_NUM			AS inquireNum,
+			T1.STOCK_NUM			AS stockNum,
+			T2.STOCK_NAME			AS stockName,
+			T1.MEMBER_NUM			AS memberNum,
+			T3.MEMBER_ID			AS memberId,
+			T1.INQUIRE_TITLE		AS inquireTitle,
+			T1.INQUIRE_CONTENT		AS inquireContent,
+			T1.INQUIRE_DATE			AS inquireDate,
+			T1.INQUIRE_MODIFY_DATE	AS inquireModifyDate,
+			T1.REPLY_STATUS			AS replyStatus,
+			T1.REPLY_CONTENT		AS replyContent,
+			T1.REPLY_DATE			AS replyDate,
+			T1.REPLY_MODIFY_DATE	AS replyModifyDate
+		FROM INQUIRES T1 
+			LEFT JOIN STOCKS T2		ON T1.STOCK_NUM = T2.STOCK_NUM
+			LEFT JOIN MEMBERS T3	ON T1.MEMBER_NUM = T3.MEMBER_NUM 
+		WHERE T1.INQUIRE_NUM = #{inquireNum} 
+	]]>
+	</select>
+	
+	<update id="updateQnaStatus_I">
+	<![CDATA[
+		UPDATE INQUIRES SET REPLY_STATUS='Y', REPLY_CONTENT=#{replyContent}, REPLY_DATE=sysdate WHERE INQUIRE_NUM=#{inquireNum}
+	]]>
+	</update>
+	
+	<update id="updateQnaStatus_U">
+	<![CDATA[
+		UPDATE INQUIRES SET REPLY_STATUS='Y', REPLY_CONTENT=#{replyContent}, REPLY_MODIFY_DATE=sysdate WHERE INQUIRE_NUM=#{inquireNum}
+	]]>
+	</update>
+
+</mapper>

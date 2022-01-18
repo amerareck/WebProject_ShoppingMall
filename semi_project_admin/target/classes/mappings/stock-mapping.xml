@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Stock">
+	<select id="getStockList" resultType="stockVO">
+	<![CDATA[
+		SELECT
+		    T1.STOCK_NUM        AS stockNum,
+		    T1.STOCK_CODE       AS stockCode,
+		    T1.STOCK_NAME       AS stockName,
+		    T3.SCATEGORIES_NAME AS scategoriesName,
+		    T4.LCATEGORIES_NAME AS lcategoriesName,
+		    T1.STOCK_PRICE      AS stockPrice,
+			(SELECT NVL(SUM(OPTION_AMOUNT),0) FROM OPTIONS WHERE STOCK_NUM = T1.STOCK_NUM) AS totalAmount,
+			(SELECT COUNT(*) FROM STOCKS S1 LEFT JOIN OPTIONS S2 ON S1.STOCK_NUM = S2.STOCK_NUM WHERE S2.STOCK_NUM = T1.STOCK_NUM) AS countingStockNum
+		FROM STOCKS T1 
+	        LEFT JOIN SCATEGORIES T3  ON T1.SCATEGORIES_NUM = T3.SCATEGORIES_NUM
+	        LEFT JOIN LCATEGORIES T4  ON T3.LCATEGORIES_NUM = T4.LCATEGORIES_NUM
+		ORDER BY STOCK_NUM DESC
+	]]>
+	</select>
+	
+	<select id="getLcategories" resultType="stockVO">
+	<![CDATA[
+		SELECT
+		    LCATEGORIES_NUM 	AS lcategoriesNum,
+		    LCATEGORIES_NAME 	AS lcategoriesName
+		FROM LCATEGORIES
+		ORDER BY LCATEGORIES_NUM DESC
+	]]>
+	</select>
+	
+	<select id="getScategories" resultType="stockVO">
+	<![CDATA[
+		SELECT
+		    T1.LCATEGORIES_NUM 		AS lcategoriesNum,
+		    T1.LCATEGORIES_NAME 	AS lcategoriesName,
+		    T2.SCATEGORIES_NUM 		AS scategoriesNum,
+		    T2.SCATEGORIES_NAME 	AS scategoriesName
+		FROM LCATEGORIES T1
+			LEFT JOIN SCATEGORIES T2  ON T1.LCATEGORIES_NUM = T2.LCATEGORIES_NUM
+		WHERE T2.LCATEGORIES_NUM = #{lcategoriesNum}
+		ORDER BY SCATEGORIES_NUM DESC
+	]]>
+	</select>
+	
+	<select id="getCheckStockCode" resultType="stockVO">
+	<![CDATA[
+		SELECT
+		    COUNT(*)	AS checkStockCode
+		FROM STOCKS T1
+		WHERE STOCK_CODE = #{stockCode}
+	]]>
+	</select>
+	
+	<select id="getStockNumToStockCode" resultType="stockVO">
+	<![CDATA[
+		SELECT
+		    STOCK_NUM	AS stockNum
+		FROM STOCKS T1
+		WHERE STOCK_CODE = #{stockCode}
+	]]>
+	</select>
+	
+	<select id="getStockInfo" resultType="stockVO">
+	<![CDATA[
+		SELECT
+		    T1.STOCK_NUM        AS stockNum,
+		    T1.STOCK_CODE       AS stockCode,
+		    T1.STOCK_NAME       AS stockName,
+		    T3.SCATEGORIES_NUM 	AS scategoriesNum,
+		    T3.SCATEGORIES_NAME AS scategoriesName,
+		    T4.LCATEGORIES_NUM 	AS lcategoriesNum,
+		    T4.LCATEGORIES_NAME AS lcategoriesName,
+		    T1.STOCK_PRICE      AS stockPrice,
+		    T1.STOCK_PHOTO      AS stockPhoto,
+		    T1.STOCK_INFO      	AS stockInfo,
+			(SELECT NVL(SUM(OPTION_AMOUNT),0) FROM OPTIONS WHERE STOCK_NUM = T1.STOCK_NUM) AS totalAmount
+		FROM STOCKS T1 
+	        LEFT JOIN SCATEGORIES T3 ON T1.SCATEGORIES_NUM = T3.SCATEGORIES_NUM
+	        LEFT JOIN LCATEGORIES T4 ON T3.LCATEGORIES_NUM = T4.LCATEGORIES_NUM
+		WHERE T1.STOCK_NUM = #{stockNum}
+	]]>
+	</select>
+	
+	<select id="getStockOptionInfo" resultType="stockVO">
+	<![CDATA[
+		SELECT
+		    OPTION_NUM		AS optionNum,
+		    OPTION_COLOR	AS optionColor,
+		    OPTION_SIZE		AS optionSize,
+		    OPTION_AMOUNT	AS optionAmount
+		FROM OPTIONS
+		WHERE STOCK_NUM = #{stockNum}
+	]]>
+	</select>
+	
+	<select id="getStockOptionInfoOne" resultType="stockVO">
+	<![CDATA[
+		SELECT
+		    OPTION_NUM		AS optionNum,
+		    OPTION_COLOR	AS optionColor,
+		    OPTION_SIZE		AS optionSize,
+		    OPTION_AMOUNT	AS optionAmount
+		FROM OPTIONS
+		WHERE OPTION_NUM = #{optionNum}
+	]]>
+	</select>
+	
+	<insert id="insertStock">
+	<![CDATA[
+		INSERT INTO STOCKS(STOCK_NUM,SCATEGORIES_NUM,STOCK_CODE,STOCK_NAME,STOCK_PHOTO,STOCK_PRICE,STOCK_INFO) 
+	    	VALUES((SELECT NVL(MAX(STOCK_NUM),0)+1 FROM STOCKS),#{scategoriesNum}, #{stockCode}, #{stockName},#{stockPhoto},#{stockPrice},#{stockInfo})
+	]]>
+	</insert>
+	
+	<insert id="insertStockOption">
+	<![CDATA[
+		INSERT INTO OPTIONS(OPTION_NUM,STOCK_NUM,OPTION_SIZE,OPTION_COLOR,OPTION_AMOUNT) 
+    		VALUES((SELECT NVL(MAX(OPTION_NUM),0)+1 FROM OPTIONS),#{stockNum}, #{optionSize}, #{optionColor},#{optionAmount})
+	]]>
+	</insert>
+	
+	<update id="updateStock">
+	<![CDATA[
+		UPDATE STOCKS SET SCATEGORIES_NUM=#{scategoriesNum}, STOCK_NAME=#{stockName}, STOCK_PHOTO=#{stockPhoto}, STOCK_PRICE=#{stockPrice}, STOCK_INFO=#{stockInfo} WHERE STOCK_NUM=#{stockNum}
+	]]>
+	</update>
+	
+	<update id="updateStock_noFile">
+	<![CDATA[
+		UPDATE STOCKS SET SCATEGORIES_NUM=#{scategoriesNum}, STOCK_NAME=#{stockName}, STOCK_PRICE=#{stockPrice}, STOCK_INFO=#{stockInfo} WHERE STOCK_NUM=#{stockNum}
+	]]>
+	</update>
+	
+	<update id="updateStockOption">
+	<![CDATA[
+		UPDATE OPTIONS SET OPTION_COLOR=#{optionColor}, OPTION_SIZE=#{optionSize}, OPTION_AMOUNT=#{optionAmount} WHERE OPTION_NUM=#{optionNum}
+	]]>
+	</update>
+	
+	<delete id="deleteStock">
+	<![CDATA[
+		DELETE FROM STOCKS WHERE STOCK_NUM=#{stockNum}
+	]]>
+	</delete>
+
+	<delete id="deleteStockToOption">
+	<![CDATA[
+		DELETE FROM OPTIONS WHERE STOCK_NUM=#{stockNum}
+	]]>
+	</delete>
+	
+	<delete id="deleteStockOption">
+	<![CDATA[
+		DELETE FROM OPTIONS WHERE OPTION_NUM=#{optionNum}
+	]]>
+	</delete>
+	
+	
+
+</mapper>
