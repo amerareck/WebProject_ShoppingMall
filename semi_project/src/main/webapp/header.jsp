@@ -52,7 +52,7 @@
 				<div class="row">
 					<div class="col-lg-2 col-md-2"> <!-- row 1번 -->
 						<div class="logo">
-							<a href="index.jsp">
+							<a href="/">
 								<img src="img/logo.png" alt="">
 							</a>
 						</div>

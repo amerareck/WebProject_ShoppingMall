@@ -33,7 +33,7 @@ public class StockController {
 		
 			//리퀘스트에 보관 - 이동해갈 페이지 지정(db데이터 담아서)
 			System.out.println(stocklist);
-			model.addAttribute("stocklist", stocklist);	
+			model.addAttribute("stocklist", stocklist);
 			
 			return "/main/shop";
 		}

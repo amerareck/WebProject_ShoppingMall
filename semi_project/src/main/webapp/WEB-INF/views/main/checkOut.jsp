@@ -43,7 +43,7 @@
                 <div class="row">
                     <div class="col-lg-6">
                         <div class="checkout-content">
-                            <a href="#" class="content-btn">Click Here To Login</a>
+                            <a href="#" class="content-btn">회원 정보 가져오기</a>
                         </div>
                         <h4>구매 정보 입력</h4>
                         <div class="row">
@@ -89,10 +89,10 @@
                     </div>
                     <div class="col-lg-6">
                         <div class="checkout-content">
-                            <input type="text" placeholder="Enter Your Coupon Code">
+                            <input type="text" placeholder="쿠폰 정보 입력">
                         </div>
                         <div class="place-order">
-                            <h4>Your Order</h4>
+                            <h4>주문 내역</h4>
                             <div class="order-total">
                                 <ul class="order-table">
                                     <li>Product <span>Total</span></li>
@@ -112,7 +112,7 @@
                                     </div>
                                 </div>
                                 <div class="order-btn">
-                                    <button type="submit" class="site-btn place-btn">Place Order</button>
+                                    <button type="submit" class="site-btn place-btn" style="font-size: 16px">주문 신청</button>
                                 </div>
                             </div>
                         </div>

@@ -15,6 +15,13 @@
  }
 </style>
 
+<script src="js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+	function interestClick() {
+		$(this).attr("icon_heart_alt", "icon_heart");
+	}
+</script>
+
 <!-- Breadcrumb Section Begin -->
 <div class="breacrumb-section">
 	<div class="container">
@@ -74,7 +81,7 @@
 										<img src="${stocklist.stockPhoto}" width="300" height="350" alt=""/>  <!-- img/products/product-1.jpg  ${stocklist.stockPhoto } -->
 																				<!-- <div class="sale pp-sale">Sale</div> 세일 -->
 										<div class="icon">
-											<i class="icon_heart_alt"></i>								<!-- 좋아요  -->
+											<i class="icon_heart_alt" onclick="interestClick();"></i>								<!-- 좋아요  -->
 										</div>
 										<ul>
 											<li class="w-icon active">
