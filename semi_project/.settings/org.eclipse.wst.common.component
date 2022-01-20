@@ -29,7 +29,7 @@
         
         
         <property name="java-output-path" value="target/classes"/>
-        <property name="context-root" value="ShoppingMall_OreoT"/>
+        <property name="context-root" value="biz"/>
                                 	
     
     

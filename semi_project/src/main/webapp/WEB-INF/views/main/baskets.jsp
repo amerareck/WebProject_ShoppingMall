@@ -54,37 +54,49 @@ img {
                                 </tr>
                             </thead>
                             <tbody>
-                            		<c:set var="num" value="${0}"/>
-                            	<c:forEach items="${stock}" var="stock">
-                            		<c:set var="number" value="${num+1}"/>
-                            		<c:set var="stockName" value="${stock.stockName}"/>
-                            		<c:set var="stockPhoto" value="${stock.stockPhoto}"/>
-                            		<c:set var="optionColor" value="${stock.optionColor}"/>
-                            		<c:set var="optionSize" value="${stock.optionSize}"/>
-                            		<c:set var="stockPrice" value="${stock.stockPrice}"/>
-                            		<c:set var="basketAmount" value="${stock.basketAmount}"/>
-                            		<c:set var="num" value="${number}"/>
-                                <tr>
-                                	<td>
-                                		<input type="checkbox" />
-                                	</td>
-                                    <td class="cart-pic first-row">
-                                    	<img src="${stockPhoto}" alt="" style="size: 300px"></td>
-                                    <td class="cart-title first-row">
-                                        <h5>${stockName}</h5>
-                                        <small>${optionColor} / ${optionSize} </small>
-                                    </td>
-                                    <td id="${number}" class="p-price first-row">${stockPrice}</td>
-                                    <td class="qua-col first-row">
-                                        <div class="quantity">
-                                            <div class="pro-qty">
-                                                <input type="text" value="${basketAmount}">
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="close-td first-row"><i class="ti-close"></i></td>
-                                </tr>
-                               </c:forEach>
+                            	<c:choose>
+                            		<c:when test="${!empty stock}">
+		                            <c:set var="num" value="${0}"/>
+		                            	<c:forEach items="${stock}" var="stock">
+		                            		<c:set var="number" value="${num+1}"/>
+		                            		<c:set var="stockName" value="${stock.stockName}"/>
+		                            		<c:set var="stockPhoto" value="${stock.stockPhoto}"/>
+		                            		<c:set var="optionColor" value="${stock.optionColor}"/>
+		                            		<c:set var="optionSize" value="${stock.optionSize}"/>
+		                            		<c:set var="stockPrice" value="${stock.stockPrice}"/>
+		                            		<c:set var="basketAmount" value="${stock.basketAmount}"/>
+		                            		<c:set var="num" value="${number}"/>
+		                                	<tr>
+			                                	<td>
+			                                		<input type="checkbox" />
+			                                	</td>
+			                                    <td class="cart-pic first-row">
+			                                    	<img src="${stockPhoto}" alt="" style="size: 300px"></td>
+			                                    <td class="cart-title first-row">
+			                                        <h5>${stockName}</h5>
+			                                        <small>${optionColor} / ${optionSize} </small>
+			                                    </td>
+			                                    <td id="${number}" class="p-price first-row">${stockPrice}</td>
+			                                    <td class="qua-col first-row">
+			                                        <div class="quantity">
+			                                            <div class="pro-qty">
+			                                                <input type="text" value="${basketAmount}">
+			                                            </div>
+			                                        </div>
+			                                    </td>
+			                                    <td class="close-td first-row"><i class="ti-close"></i></td>
+		                                </tr>
+		                               </c:forEach>
+	                               </c:when>
+	                               
+	                               <c:otherwise>
+	                               		<tr>
+	                               			<td colspan="6" style="padding-top: 34">
+	                               				<span style="align-content: center">* 장바구니 목록이 비어있습니다.</span>
+	                               			</td>
+	                               		</tr>
+	                               </c:otherwise>
+	                           </c:choose>
                             </tbody>
                         </table>
                     </div>

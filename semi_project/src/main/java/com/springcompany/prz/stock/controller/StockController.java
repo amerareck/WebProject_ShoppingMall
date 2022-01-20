@@ -26,7 +26,7 @@ public class StockController {
 	
 	//카테고리별 상품리스트						//(화면만 서비스)
 		@RequestMapping(value = "shop.do", method = RequestMethod.GET)
-		public String stockView(@ModelAttribute StockVO vo, @RequestParam int lcategoriesNum, @RequestParam int scategoriesNum, Model model) {  
+		public String stockView(@ModelAttribute StockVO vo, Model model) {  
 			System.out.println("상품 전체보기..");
 						
 			List<StockVO> stocklist = stockService.getstockByCategory(vo);
@@ -142,12 +142,16 @@ public class StockController {
 			
 			System.out.println("장바구니 보기..");
 			List<StockVO> listVO = stockService.getBasketInfo(member.getMemberNum()); // getBasketInfo 만들어주기
-			System.out.println(listVO.get(0));
 			
-			//view단에 vo객체를 넘겨준다.
-			model.addAttribute("stock", listVO);
-			session.setAttribute("bseq", listVO.size());
-			model.addAttribute("sessionStock", listVO);
+			if (!listVO.isEmpty()) {
+				System.out.println(listVO.get(0));
+				//view단에 vo객체를 넘겨준다.
+				model.addAttribute("stock", listVO);
+				model.addAttribute("sessionStock", listVO);
+				session.setAttribute("bseq", listVO.size());
+			} else {
+				model.addAttribute("stock", null);
+			}
 			
 			
 			return "/main/baskets";
