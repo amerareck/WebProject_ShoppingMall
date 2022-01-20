@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  							"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+
+	<!-- Alias 설정(별칭 설정) -->
+	<typeAliases>
+		<typeAlias alias="main" type="com.springcompany.biz.main.dao.MainVO"/>
+		<typeAlias alias="member" type="com.springcompany.biz.user.dao.UserVO"/>
+	</typeAliases>
+
+	<!-- Sql Mapper 설정 -->
+  	<mappers>
+  		<mapper resource="mappings/springmain-mapping.xml"/>
+  		<mapper resource="mappings/springstock-mapping.xml"/>
+  		<mapper resource="mappings/springuser-mapping.xml"/>
+  	</mappers>
+  
+</configuration>
+
+
+
+

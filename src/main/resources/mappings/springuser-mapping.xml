@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- <mapper namespace="mappings.springboard-mapping"> -->
+<mapper namespace="userDAO">
+
+	<select id="getMemberInfo" resultType="com.springcompany.biz.user.dao.UserVO">
+	<![CDATA[
+		select 
+			MEMBER_NUM as memberNum,
+			MEMBER_NAME as memberName,
+			MEMBER_ID as memberId,
+			MEMBER_PASS as memberPass,
+			MEMBER_TEL as memberTel,
+			MEMBER_EMAIL as memberEmail,
+			MEMBER_BIRTH as memberBirth,
+			MEMBER_ADDRESS as memberAddress,
+			MEMBER_AGREE as memberAgree,
+			MEMBER_DATE as memberDate
+		 from members where MEMBER_ID=#{id}
+	]]>
+	</select>
+	
+	<select id="getBasketNum" resultType="com.springcompany.biz.user.dao.UserVO">
+	<![CDATA[
+		select 
+			COUNT(T1.BASKET_NUM) as memberBasketNum,
+			COUNT(T2.INTEREST_NUM) as memberInterItem
+		 from BASKETS T1 LEFT OUTER JOIN INTERESTS T2 ON T1.BASKET_NUM = T2.INTEREST_NUM
+		 where T1.MEMBER_NUM=#{number}
+	]]>
+	</select>
+	
+	<select id="getBasketNum_NotUsed" resultType="com.springcompany.biz.stock.dao.StockVO">
+	<![CDATA[
+		SELECT 
+			T1.BASKET_NUM,
+			T2.INTEREST_NUM,
+			T1.OPTION_NUM,
+			T1.MEMBER_NUM
+			
+			FROM BASKETS T1
+				LEFT OUTER JOIN INTERESTS T2 ON T1.MEMBER_NUM = T2.MEMBER_NUM
+			WHERE T1.MEMBER_NUM = #{memberNum}
+			
+			
+	]]>
+	</select>
+	
+	<insert id="signup">
+	<![CDATA[
+		 INSERT INTO MEMBERS (
+		 	MEMBER_NUM,
+		 	MEMBER_NAME,
+		 	MEMBER_ID,
+		 	MEMBER_PASS,
+		 	MEMBER_TEL,
+		 	MEMBER_EMAIL,
+		 	MEMBER_BIRTH,
+		 	MEMBER_ADDRESS,
+		 	MEMBER_AGREE
+		 	)
+    	VALUES((SELECT NVL(MAX(MEMBER_NUM),0)+1 FROM MEMBERS), -- MEMBER_NUM
+    		#{memberName}, --
+    		#{memberId}, 
+    		#{memberPass},
+    		#{memberTel},
+    		#{memberEmail},
+    		#{memberBirth},
+    		#{memberAddress},
+    		'Y' -- MEMBER_AGREE
+    		)
+	]]>
+	</insert>
+	
+</mapper>
