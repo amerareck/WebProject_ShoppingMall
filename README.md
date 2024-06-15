@@ -1,6 +1,6 @@
 #  웹 프로젝트(인터넷 쇼핑몰)
  - 본 프로젝트는 K-digital trainning 수업의 과정 중 Spring Framework를 활용한 웹 개발 프로젝트 입니다.
- - eclipse / jdk 1.8 / oracle 11b / spring 4 환경에서 구축하였습니다.
+ - eclipse / jdk 1.8 / oracle 11b / spring 4 환경에서 개발 및 구축하였습니다.
 
 ![semiProject_1](https://github.com/amerareck/WebProject_ShoppingMall/assets/50934521/468213f3-9289-4c6a-b199-4ff2572ba0e1)
 ![semiProject_2](https://github.com/amerareck/WebProject_ShoppingMall/assets/50934521/bcd73aae-952a-420c-b0e2-a78585837412)
